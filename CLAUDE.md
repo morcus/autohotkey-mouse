@@ -32,8 +32,10 @@ physical buttons act as chord prefixes, each defining its own "layer" of actions
 - **`F24`** (a "sniper"/extra mouse button mapped to F24) — navigation/editing: Ctrl+PgUp/PgDn
   tab switching, F5 refresh, copy, and word-by-word selection.
 
-Each prefix also has a bare fallback (`XButton1::Send "{XButton1}"`) so the button still does
-its normal thing when pressed alone.
+`XButton1` and `XButton2` also have a bare fallback (`XButton1::Send "{Blind}{XButton1}"`)
+so the button still does its normal click when pressed alone — the `{Blind}` preserves any
+physically held modifiers (e.g. Ctrl+Back in a browser). `F24` deliberately has no fallback:
+alone it has no useful native action.
 
 A separate chord, `~LButton & RButton::`, holds Ctrl+Shift while the left button is down
 (via `KeyWait "LButton"`) to drag windows between **PowerToys FancyZones** — the `~` keeps the
@@ -51,7 +53,9 @@ physical left-click passing through to the OS.
   line (e.g. `F24 & WheelLeft::   ; Select word left`).
 - Prefer AutoHotkey's built-in modifier prefixes in send strings — `^` Ctrl, `+` Shift,
   `!` Alt, `#` Win — over the verbose `{CtrlDown}…{CtrlUp}` form.
-- Multi-line hotkey blocks that repeat/hold keys use an explicit `Sleep` (e.g. `Sleep 250`)
-  to debounce; preserve this when adding similar auto-repeat or hold behavior.
+- Wheel-tick actions that must not fire once per tick go through the `SendDebounced(keys, ms)`
+  helper with a named `*_DEBOUNCE_MS` constant. The debounce only works because
+  `#MaxThreadsPerHotkey` is left at its default of 1 (extra ticks are discarded while the
+  thread sleeps) — do not raise it.
 - Keep the file ASCII-only (plain `-`, no accented characters) to avoid encoding issues when
   AutoHotkey reads the script.

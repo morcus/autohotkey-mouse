@@ -64,7 +64,7 @@ After editing the script, reload it from the tray icon (**Reload Script**) or re
 | `F24` + Wheel Up / Down | Previous / next tab (Ctrl+PgUp / Ctrl+PgDn) |
 | `F24` + Middle click | Refresh (F5) |
 | `F24` + Left click | Copy (Ctrl+C) |
-| `F24` + Right click | Win+PgDn |
+| `F24` + Right click | Cycle overlapping windows in a FancyZones zone (Win+PgDn) |
 | `F24` + Wheel tilt left / right | Select word left / right (Ctrl+Shift+Arrow) |
 
 ### Other
