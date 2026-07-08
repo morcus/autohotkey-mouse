@@ -1,181 +1,94 @@
-; #InstallKeybdHook
+#Requires AutoHotkey v2.0
+#SingleInstance Force
+
+; ================================================================
+;  Mouse button remaps (AutoHotkey v2)
+;
+;  Chord model : hold a prefix button (XButton1 / XButton2 / F24),
+;                then press or scroll another button to fire an
+;                action. Each prefix alone still sends its normal
+;                click.
+;  Modifiers   : ^ Ctrl    + Shift    ! Alt    # Win
+; ================================================================
 
 
-; ------------------------
-; Right click enhancements
-; ------------------------
+; ----------------------------------------------------------------
+;  "Back" button (XButton1) - media & audio
+; ----------------------------------------------------------------
 
-;(RButton Up):: Send "{RButton Up}"
-;(RButton Dn):: Send "{RButton Down}"
-;RButton::
-;RButton & WheelUp::Send "{PgUp}"
-;RButton & WheelDown::Send "{PgDn}"
+XButton1 & WheelUp::Send "{Volume_Up}"        ; Volume +
+XButton1 & WheelDown::Send "{Volume_Down}"    ; Volume -
+XButton1 & MButton::Send "{Volume_Mute}"      ; Volume mute
+XButton1 & LButton::Send "{Media_Play_Pause}" ; Play / pause
+XButton1 & RButton::Send "{Media_Next}"       ; Next track
 
-; --------------------------------
-; Mouse "back" button enhancements
-; --------------------------------
-
-; Wheel UP
-XButton1 & WheelUp::Send "{Volume_Up}"						; Volume +
-
-; Wheel Down
-XButton1 & WheelDown::Send "{Volume_Down}"					; Volume -
-
-; Middle button
-XButton1 & MButton::Send "{Volume_Mute}"					; Volume Mute
-
-; Left button
-XButton1 & LButton::Send "{Media_Play_Pause}"				; Media Play/Pause
-
-; Right button
-XButton1 & RButton::Send "{Media_Next}"						; Media Next
-
-	; Middle tilt left
-	XButton1 & WheelLeft::
-	{
-	Send "{ALTDOWN}{NumpadDot}{ALTUP}"						; Buds2 ambiant sound
-	Sleep 250
-	return
-	}
-
-	; Middle tilt right
-	XButton1 & WheelRight::
-	{
-	Send "{ALTDOWN}{NumpadSub}{ALTUP}"						; Buds2 anc
-	Sleep 250
-	return
-	}
-
-
-; Deprecated
-; XButton1 & WheelLeft::Send "{Media_Prev}"					; Media Prev
-; XButton1 & WheelRight::Send "{Media_Next}"				; Media Next	???	duplicated
-
-; Default
-XButton1:: Send "{XButton1}"								; Default button
-
-
-; --------------------------------
-; Mouse "next" button enhancements
-; --------------------------------
-
-; Wheel UP
-XButton2 & WheelUp::Send "{CTRLDOWN}{WheelUp}{CTRLUP}"				; Zoom +
-
-; Wheel Down
-XButton2 & WheelDown::Send "{CTRLDOWN}{WheelDown}{CTRLUP}"			; Zoom -
-
-; Middle button
-XButton2 & MButton::Send "^+{t}"									; Firefox: Open last closed tab
-
-; Left button
-XButton2 & LButton::Send "{CTRLDOWN}{LButton}{CTRLUP}"				; Ctrl + Left Mouse
-
-; Right button
-XButton2 & RButton::Send "{SHIFTDOWN}{LButton}{SHIFTUP}"			; Shift + Left Mouse
-
-; Middle tilt left
-; NOTHING
-
-; Middle tilt right
-; NOTHING
-
-; Deprecated
-; XButton2 & WheelUp::Send "{CTRLDOWN}{+}{CTRLUP}"					; Zoom +
-; XButton2 & WheelDown::Send "{CTRLDOWN}{-}{CTRLUP}"				; Zoom -
-; XButton2 & WheelLeft::Send "{CTRLDOWN}{PgUp}{CTRLUP}"				; Previous TAB
-; XButton2 & WheelRight::Send "{CTRLDOWN}{PgDn}{CTRLUP}"			; Next TAB
-
-; Default
-XButton2::Send "{XButton2}"											; Default button
-
-
-; ----------------------------------
-; Mouse "sniper" button enhancements
-; ----------------------------------
-
-; Wheel UP
-F24 & WheelUp::Send "{CTRLDOWN}{PgUp}{CTRLUP}"					; Previous TAB
-
-; Wheel Down
-F24 & WheelDown::Send "{CTRLDOWN}{PgDn}{CTRLUP}"				; Next TAB
-
-; Middle button
-F24 & MButton::Send "{F5}"										; F5 - refresh
-
-; Left button
-F24 & LButton::Send "{CTRLDOWN}c{CTRLUP}"						; CTRL + C
-
-; Right button
-F24 & RButton::Send "{LWinDOWN}{PgDn}{LWinUP}"					; CTRL + V
-
-; Wheel tilt left
-F24 & WheelLeft::
+XButton1 & WheelLeft::   ; Galaxy Buds2 - ambient sound
 {
-Send "{CTRLDOWN}{SHIFTDOWN}{Left}{CTRLUP}{SHIFTUP}"				; select word left
-Sleep 150
-return
+    Send "!{NumpadDot}"
+    Sleep 250
 }
 
-; Wheel tilt right
-F24 & WheelRight::												; select word right
+XButton1 & WheelRight::  ; Galaxy Buds2 - ANC
 {
-Send "{CTRLDOWN}{SHIFTDOWN}{Right}{CTRLUP}{SHIFTUP}"
-Sleep 150
-return
+    Send "!{NumpadSub}"
+    Sleep 250
 }
 
-; F24:: Send "{XButton1}"										; Default button
-; F23:: sendinput "{ASC 096}"
-; F23:: send "````"
-; F1::Send "{F23}"
-; F2::Send "{F22}"
-; F3::Send "{F21}"
-; F4::Send "{F16}"
-; F5::Send "{F17}"
-
-F22::Send "{WheelDown 5}"
-F23::Send "{WheelUp 5}"
+XButton1::Send "{XButton1}"                   ; passthrough (normal back click)
 
 
-; Deprecated
-; F24 & WheelUp::Send "{PgUp}"									; Page Up
-; F24 & WheelDown::Send "{PgDn}"								; Page Down
+; ----------------------------------------------------------------
+;  "Next" button (XButton2) - browser & zoom
+; ----------------------------------------------------------------
+
+XButton2 & WheelUp::Send "^{WheelUp}"       ; Zoom in
+XButton2 & WheelDown::Send "^{WheelDown}"   ; Zoom out
+XButton2 & MButton::Send "^+{t}"            ; Reopen last closed tab
+XButton2 & LButton::Send "^{LButton}"       ; Ctrl + click
+XButton2 & RButton::Send "+{LButton}"       ; Shift + click
+
+XButton2::Send "{XButton2}"                 ; passthrough (normal forward click)
 
 
+; ----------------------------------------------------------------
+;  "Sniper" button (F24) - navigation & editing
+; ----------------------------------------------------------------
 
-; --------------------------------------------------------------------------------------
-; Microsoft PowerToys FancyZones - move window to zone with left and right mouse buttons
-; --------------------------------------------------------------------------------------
+F24 & WheelUp::Send "^{PgUp}"    ; Previous tab
+F24 & WheelDown::Send "^{PgDn}"  ; Next tab
+F24 & MButton::Send "{F5}"       ; Refresh
+F24 & LButton::Send "^c"         ; Copy
+F24 & RButton::Send "#{PgDn}"    ; Win + PgDn
 
-~lbutton & rbutton::
+F24 & WheelLeft::   ; Select word left
 {
-	while GetKeyState("lbutton", "P")
-	{
-		; if !GetKeyState("rbutton", "P")
-		; {
-		; 	send "{SHIFTUp}{CTRLUp}"
-		; 	return
-		; }
-		
-		Send "{SHIFTDown}{CTRLDown}"
-		sleep 50
-	}
-send "{SHIFTUp}{CTRLUp}"
-return
+    Send "^+{Left}"
+    Sleep 150
+}
+
+F24 & WheelRight::  ; Select word right
+{
+    Send "^+{Right}"
+    Sleep 150
 }
 
 
-;rbutton & WheelUp::Send "{CTRLDOWN}{PgUp}{CTRLUP}"				; Previous TAB
-;rbutton & WheelDown::Send "{CTRLDOWN}{PgDn}{CTRLUP}"			; Next TAB
-;rbutton:: Send "{rbutton}"
+; ----------------------------------------------------------------
+;  Scroll wheel emulation (extra buttons)
+; ----------------------------------------------------------------
+
+F22::Send "{WheelDown 5}"        ; Scroll down x5
+F23::Send "{WheelUp 5}"          ; Scroll up x5
 
 
+; ----------------------------------------------------------------
+;  PowerToys FancyZones - snap window while dragging
+;  (hold Left, then Right, and drag)
+; ----------------------------------------------------------------
 
-; ~rbutton & WheelUp::
-; {
-; 	while GetKeyState("rbutton", "T")
-; 	{
-; 		Send "{CTRLDOWN}{PgUp}{CTRLUP}"
-; 	}
-; }
+~LButton & RButton::
+{
+    Send "{Shift Down}{Ctrl Down}"  ; hold Shift+Ctrl while dragging
+    KeyWait "LButton"               ; until the left button is released
+    Send "{Shift Up}{Ctrl Up}"
+}
