@@ -72,14 +72,6 @@ F24 & WheelRight::SendDebounced("^+{Right}", SELECT_DEBOUNCE_MS) ; Select word r
 
 
 ; ----------------------------------------------------------------
-;  Scroll wheel emulation (extra buttons)
-; ----------------------------------------------------------------
-
-F22::Send "{WheelDown 5}"        ; Scroll down x5
-F23::Send "{WheelUp 5}"          ; Scroll up x5
-
-
-; ----------------------------------------------------------------
 ;  PowerToys FancyZones - snap window while dragging
 ;  (hold Left, then Right, and drag)
 ; ----------------------------------------------------------------
