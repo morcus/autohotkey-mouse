@@ -64,7 +64,7 @@ After editing the script, reload it from the tray icon (**Reload Script**) or re
 | `F24` + Wheel Up / Down | Previous / next tab (Ctrl+PgUp / Ctrl+PgDn) |
 | `F24` + Middle click | Refresh (F5) |
 | `F24` + Left click | Copy (Ctrl+C) |
-| `F24` + Right click | Win+PgDn |
+| `F24` + Right click | Cycle overlapping windows in a FancyZones zone (Win+PgDn) |
 | `F24` + Wheel tilt left / right | Select word left / right (Ctrl+Shift+Arrow) |
 
 ### Other
@@ -72,11 +72,7 @@ After editing the script, reload it from the tray icon (**Reload Script**) or re
 | Input | Action |
 | --- | --- |
 | Left + Right button (hold) | Hold Ctrl+Shift to snap windows between PowerToys FancyZones |
-| `F22` | Scroll down 5 |
-| `F23` | Scroll up 5 |
 
 ## Customizing
 
 Bindings are grouped into labeled sections in [`mouse.ahk`](mouse.ahk), one per prefix layer.
-Superseded mappings are kept as `; Deprecated` comment blocks rather than deleted, so previous
-configurations remain available for reference.
