@@ -79,6 +79,7 @@ period) in `mouse.ahk` to taste.
 
 | Input | Action |
 | --- | --- |
+| `XButton1` + `XButton2` (either order) | Cycle overlapping windows in a FancyZones zone (Win+PgDn) |
 | Left + Right button (hold) | Hold Ctrl+Shift to snap windows between PowerToys FancyZones |
 
 ## Customizing

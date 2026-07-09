@@ -123,6 +123,15 @@ SetMouseSpeed(speed) {
 
 
 ; ----------------------------------------------------------------
+;  "Back" + "Next" buttons together - FancyZones
+;  (both press orders defined so either button can be held first)
+; ----------------------------------------------------------------
+
+XButton1 & XButton2::Send "#{PgDn}" ; Cycle overlapping windows in zone
+XButton2 & XButton1::Send "#{PgDn}" ; Cycle overlapping windows in zone
+
+
+; ----------------------------------------------------------------
 ;  PowerToys FancyZones - snap window while dragging
 ;  (hold Left, then Right, and drag)
 ; ----------------------------------------------------------------
