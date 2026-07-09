@@ -57,6 +57,11 @@ scope). This approach was chosen over a `WH_MOUSE_LL` hook or third-party driver
 Interception) specifically because it needs no kernel driver or admin rights — relevant since
 this runs on a work PC where such installs may be blocked by IT/EDR policy.
 
+`XButton1 & XButton2::` / `XButton2 & XButton1::` send Win+PgDn to cycle overlapping windows
+in a FancyZones zone — this is defined in both directions because AHK only fires a custom
+combination for the press order it was declared with; since both buttons are already prefix
+keys in their own right (each has combos above), either could be pressed first.
+
 A separate chord, `~LButton & RButton::`, holds Ctrl+Shift while the left button is down
 (via `KeyWait "LButton"`) to drag windows between **PowerToys FancyZones** — the `~` keeps the
 physical left-click passing through to the OS.
