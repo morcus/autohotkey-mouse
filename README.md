@@ -13,9 +13,12 @@ the wheel) to trigger an action. Each prefix defines its own "layer":
 | --- | --- | --- |
 | `XButton1` | mouse "back" button | Media & audio |
 | `XButton2` | mouse "next" button | Browser & zoom |
-| `F24` | extra/"sniper" button mapped to F24 | Navigation & editing |
+| `F24` | extra/"sniper" button mapped to F24 | Sniper mode, navigation & editing |
 
-Each prefix still sends its normal click when pressed on its own.
+`XButton1` and `XButton2` still send their normal click when pressed on their own. Holding
+`F24` on its own activates **sniper mode**: the Windows pointer speed is lowered while the
+button is held, and cursor movement is further damped on top of that for extra precision —
+left/right clicks (including drags) work normally during the hold.
 
 ## Requirements
 
@@ -57,15 +60,20 @@ After editing the script, reload it from the tray icon (**Reload Script**) or re
 | `XButton2` + Left click | Ctrl + Left click |
 | `XButton2` + Right click | Shift + Left click |
 
-### `F24` — Navigation & editing
+### `F24` — Sniper mode, navigation & editing
 
 | Chord | Action |
 | --- | --- |
+| `F24` (hold) | Sniper mode: lower pointer speed (`SNIPER_MOUSE_SPEED`) plus extra cursor damping (`SNIPER_EXTRA_SCALE`) while held |
 | `F24` + Wheel Up / Down | Previous / next tab (Ctrl+PgUp / Ctrl+PgDn) |
 | `F24` + Middle click | Refresh (F5) |
-| `F24` + Left click | Copy (Ctrl+C) |
-| `F24` + Right click | Cycle overlapping windows in a FancyZones zone (Win+PgDn) |
 | `F24` + Wheel tilt left / right | Select word left / right (Ctrl+Shift+Arrow) |
+
+Left and right click are deliberately not bound in this layer, so clicking and dragging stay
+native while aiming in sniper mode. The pointer-speed change is temporary (not written to the
+registry) and is restored on release, or on script exit if it dies mid-hold; the damping timer
+simply stops. Tune `SNIPER_EXTRA_SCALE` (lower = slower) and `SNIPER_POLL_MS` (sampling
+period) in `mouse.ahk` to taste.
 
 ### Other
 
