@@ -1,6 +1,7 @@
 #Requires AutoHotkey v2.0
 #SingleInstance Force
 #Warn
+CoordMode "Mouse", "Screen"  ; MouseGetPos/SetCursorPos agree on screen coordinates (sniper damping)
 
 ; ================================================================
 ;  Mouse button remaps (AutoHotkey v2)
@@ -8,7 +9,8 @@
 ;  Chord model : hold a prefix button (XButton1 / XButton2 / F24),
 ;                then press or scroll another button to fire an
 ;                action. XButton1/XButton2 alone still send their
-;                normal click; F24 alone is intentionally inert.
+;                normal click; F24 held alone is sniper mode
+;                (lowered pointer speed for precise movement).
 ;  Modifiers   : ^ Ctrl    + Shift    ! Alt    # Win
 ; ================================================================
 
@@ -58,17 +60,66 @@ XButton2::Send "{Blind}{XButton2}"          ; passthrough (keeps held modifiers)
 
 
 ; ----------------------------------------------------------------
-;  "Sniper" button (F24) - navigation & editing
-;  (no bare fallback: F24 alone has no useful native action)
+;  "Sniper" button (F24) - precision, navigation & editing
+;  (held alone, F24 lowers the pointer speed and damps cursor
+;   movement further still; left/right click are deliberately
+;   unbound so clicks and drags stay native while aiming)
 ; ----------------------------------------------------------------
+
+SNIPER_MOUSE_SPEED := 1   ; Windows pointer speed (1-20) while F24 is held; default is 10
+SNIPER_EXTRA_SCALE := 1 ; extra damping on top of the OS floor above (1.0 = none, lower = slower)
+SNIPER_POLL_MS     := 8   ; cursor-damping sample period in ms (125 Hz)
 
 F24 & WheelUp::Send "^{PgUp}"    ; Previous tab
 F24 & WheelDown::Send "^{PgDn}"  ; Next tab
 F24 & MButton::Send "{F5}"       ; Refresh
-F24 & LButton::Send "^c"         ; Copy
-F24 & RButton::Send "#{PgDn}"    ; FancyZones - cycle overlapping windows in zone
 F24 & WheelLeft::SendDebounced("^+{Left}", SELECT_DEBOUNCE_MS)   ; Select word left
 F24 & WheelRight::SendDebounced("^+{Right}", SELECT_DEBOUNCE_MS) ; Select word right
+
+; The ~ makes this fire on press instead of release (the default
+; for a custom-combination prefix key); F24's own keystroke leaks
+; through to the OS, which is harmless since F24 does nothing.
+~F24::   ; Sniper mode - lower pointer speed and damp cursor movement while held
+{
+    normal := GetMouseSpeed()
+    OnExit RestoreSpeed              ; restore even if the script exits mid-hold
+    SetMouseSpeed(SNIPER_MOUSE_SPEED)
+
+    MouseGetPos &refX, &refY
+    SetTimer SniperDamp, SNIPER_POLL_MS
+
+    KeyWait "F24"                    ; until the sniper button is released
+
+    SetTimer SniperDamp, 0
+    RestoreSpeed()
+    OnExit RestoreSpeed, 0
+
+    RestoreSpeed(*) {
+        SetMouseSpeed(normal)        ; no return value: a nonzero OnExit result would veto exit
+    }
+
+    ; Windows' pointer-speed floor (1) still moves the cursor faster than
+    ; desired for fine work, so this reins in each poll's movement to a
+    ; fraction of what the OS already applied, rather than the raw
+    ; hardware delta - keeps clicks/drags untouched since only the
+    ; cursor position is adjusted, not any button state.
+    SniperDamp() {
+        MouseGetPos &curX, &curY
+        refX += (curX - refX) * SNIPER_EXTRA_SCALE
+        refY += (curY - refY) * SNIPER_EXTRA_SCALE
+        DllCall("SetCursorPos", "Int", Round(refX), "Int", Round(refY))
+    }
+}
+
+GetMouseSpeed() {
+    speed := 0
+    DllCall("SystemParametersInfo", "UInt", 0x70, "UInt", 0, "UInt*", &speed, "UInt", 0)  ; SPI_GETMOUSESPEED
+    return speed
+}
+
+SetMouseSpeed(speed) {
+    DllCall("SystemParametersInfo", "UInt", 0x71, "UInt", 0, "Ptr", speed, "UInt", 0)  ; SPI_SETMOUSESPEED
+}
 
 
 ; ----------------------------------------------------------------

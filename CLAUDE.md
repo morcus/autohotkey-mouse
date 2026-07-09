@@ -29,13 +29,33 @@ physical buttons act as chord prefixes, each defining its own "layer" of actions
   next track, and Galaxy Buds2 ambient/ANC toggles (sent as Alt+Numpad combos).
 - **`XButton2`** (mouse "next" button) — browser/zoom: Ctrl+wheel zoom, reopen-closed-tab,
   Ctrl/Shift + click.
-- **`F24`** (a "sniper"/extra mouse button mapped to F24) — navigation/editing: Ctrl+PgUp/PgDn
-  tab switching, F5 refresh, copy, and word-by-word selection.
+- **`F24`** (a "sniper"/extra mouse button mapped to F24) — sniper mode plus
+  navigation/editing: Ctrl+PgUp/PgDn tab switching, F5 refresh, and word-by-word selection.
+  `F24 & LButton` / `F24 & RButton` are deliberately left unbound so clicks and drags stay
+  native while aiming in sniper mode.
 
 `XButton1` and `XButton2` also have a bare fallback (`XButton1::Send "{Blind}{XButton1}"`)
 so the button still does its normal click when pressed alone — the `{Blind}` preserves any
-physically held modifiers (e.g. Ctrl+Back in a browser). `F24` deliberately has no fallback:
-alone it has no useful native action.
+physically held modifiers (e.g. Ctrl+Back in a browser). `F24`'s bare hotkey is **sniper
+mode**: `~F24::` lowers the Windows pointer speed (SPI_SETMOUSESPEED via `DllCall`, session
+only — never persisted to the registry) to `SNIPER_MOUSE_SPEED` while the button is held,
+then restores it on release (and on script exit via `OnExit`, in case the script dies
+mid-hold). The `~` prefix matters: without it a custom-combination prefix key's own hotkey
+fires on *release*, not press.
+
+`SNIPER_MOUSE_SPEED` alone bottoms out at Windows' API floor (1 on its 1-20 scale), which is
+still too fast for fine work, so the same `~F24::` block layers a **cursor damping timer** on
+top: `SetTimer SniperDamp, SNIPER_POLL_MS` samples the cursor position every few ms and moves
+it only `SNIPER_EXTRA_SCALE` of the way toward where it actually moved (an exponential-lag
+filter via `DllCall("SetCursorPos", ...)`), then `SetTimer SniperDamp, 0` stops it on release.
+This needed `CoordMode "Mouse", "Screen"` at the top of the file, since `MouseGetPos` defaults
+to client-area-relative coordinates while `SetCursorPos` always expects screen coordinates.
+`refX`/`refY` are captured as closure variables shared between the hotkey body and the nested
+`SniperDamp()` function (same mechanism as `normal` for `RestoreSpeed`, but read *and*
+written here — AHK v2 allows this because they're first referenced with `&` in the outer
+scope). This approach was chosen over a `WH_MOUSE_LL` hook or third-party drivers (RawAccel,
+Interception) specifically because it needs no kernel driver or admin rights — relevant since
+this runs on a work PC where such installs may be blocked by IT/EDR policy.
 
 A separate chord, `~LButton & RButton::`, holds Ctrl+Shift while the left button is down
 (via `KeyWait "LButton"`) to drag windows between **PowerToys FancyZones** — the `~` keeps the
