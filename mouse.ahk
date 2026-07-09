@@ -127,8 +127,15 @@ SetMouseSpeed(speed) {
 ;  (both press orders defined so either button can be held first)
 ; ----------------------------------------------------------------
 
-XButton1 & XButton2::Send "#{PgDn}" ; Cycle overlapping windows in zone
-XButton2 & XButton1::Send "#{PgDn}" ; Cycle overlapping windows in zone
+XButton1 & XButton2::CycleZoneWindow() ; Focus the window under the cursor, then cycle
+XButton2 & XButton1::CycleZoneWindow() ; Focus the window under the cursor, then cycle
+
+CycleZoneWindow() {
+    MouseGetPos(, , &winId)  ; window under the cursor, without clicking into it
+    if winId
+        WinActivate "ahk_id " winId  ; FancyZones cycles the focused window's zone stack
+    Send "#{PgDn}"
+}
 
 
 ; ----------------------------------------------------------------

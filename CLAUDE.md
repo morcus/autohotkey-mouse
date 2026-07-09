@@ -57,10 +57,15 @@ scope). This approach was chosen over a `WH_MOUSE_LL` hook or third-party driver
 Interception) specifically because it needs no kernel driver or admin rights — relevant since
 this runs on a work PC where such installs may be blocked by IT/EDR policy.
 
-`XButton1 & XButton2::` / `XButton2 & XButton1::` send Win+PgDn to cycle overlapping windows
-in a FancyZones zone — this is defined in both directions because AHK only fires a custom
-combination for the press order it was declared with; since both buttons are already prefix
-keys in their own right (each has combos above), either could be pressed first.
+`XButton1 & XButton2::` / `XButton2 & XButton1::` call `CycleZoneWindow()` to cycle
+overlapping windows in a FancyZones zone — defined in both directions because AHK only fires a
+custom combination for the press order it was declared with; since both buttons are already
+prefix keys in their own right (each has combos above), either could be pressed first.
+`CycleZoneWindow()` activates the window under the cursor (`MouseGetPos`'s `OutputVarWin` +
+`WinActivate "ahk_id " winId`) before sending Win+PgDn, because FancyZones cycles the zone
+stack of the *focused* window, not whatever is under the cursor. Activating by handle instead
+of sending a real click avoids interacting with whatever control happens to be under the
+cursor (a link, a button, etc.).
 
 A separate chord, `~LButton & RButton::`, holds Ctrl+Shift while the left button is down
 (via `KeyWait "LButton"`) to drag windows between **PowerToys FancyZones** — the `~` keeps the
